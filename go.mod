@@ -1,3 +1,3 @@
-module github.com/GoodiesHQ/ipaddr
+module github.com/goodieshq/ipaddr
 
 go 1.19
