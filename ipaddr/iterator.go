@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type IP4NetworkIteration interface {
+type IPNetworkIteration interface {
 	Next() IP4Network
 	Inc() error
 	Dec() error

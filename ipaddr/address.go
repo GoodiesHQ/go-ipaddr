@@ -8,12 +8,35 @@ import (
 )
 
 const IP4AddressSize = 4
+const IP6AddressSize = 16
+
+type IPVersion int
+
+const (
+	IPUK IPVersion = 0 // IP version unknown
+	IPV4 IPVersion = 4 // IPv4
+	IPV6 IPVersion = 6 // IPv6
+)
 
 type IP4Address [IP4AddressSize]byte
+type IP6Address [IP6AddressSize]byte
+
+type IPAddress interface {
+	String() string     // returns a string representation of the ip address
+	Version() IPVersion // returns the IP version of the ip address
+}
+
+func (addr *IP4Address) Version() IPVersion {
+	return IPV4
+}
+
+func (addr *IP6Address) Version() IPVersion {
+	return IPV6
+}
 
 const IP4AddressRegex = `^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$`
 
-// Create an IP4Address object from a slice of bytes, does not raise an error
+// Create an IP4Address object from a slice of bytes
 func CreateIP4AddressFromBytes(value []byte) (IP4Address, error) {
 	if len(value) != IP4AddressSize {
 		return IP4Address{}, fmt.Errorf("expected %d bytes, got %d", IP4AddressSize, len(value))
@@ -23,7 +46,7 @@ func CreateIP4AddressFromBytes(value []byte) (IP4Address, error) {
 	return address, nil
 }
 
-// create an IP address from a Uint32, does not raise an error
+// create an IP address from a Uint32, does not raise an error as any uint32 can be converted to an IP
 func CreateIP4AddressFromUint32(value uint32) (IP4Address, error) {
 	bytes := make([]byte, IP4AddressSize)
 	for i := 0; i < IP4AddressSize; i++ {
@@ -33,6 +56,7 @@ func CreateIP4AddressFromUint32(value uint32) (IP4Address, error) {
 	return CreateIP4AddressFromBytes(bytes)
 }
 
+// create an IP address from a string
 func CreateIP4Address(address string) (IP4Address, error) {
 	addr := IP4Address{}
 	address = strings.TrimSpace(address)
